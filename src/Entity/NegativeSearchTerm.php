@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-class PositiveSearchTerm implements SearchTerm
+class NegativeSearchTerm implements SearchTerm
 {
-    private const TAIL_WORD = 'rocks';
+    private const TAIL_WORD = 'sucks';
 
     private $searchTerm;
     private $searchPhrase;
