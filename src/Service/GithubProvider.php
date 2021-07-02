@@ -7,7 +7,7 @@ use App\Entity\SearchTerm;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
-class GithubProvider
+class GithubProvider implements Provider
 {
     private $client;
 
