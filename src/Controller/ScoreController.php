@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\SearchTerm;
+use App\Repository\SearchTermPopularityScoreRepository;
 use App\Service\SearchPopularityScore;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,11 +18,16 @@ class ScoreController extends AbstractController
      * @var EntityManagerInterface
      */
     private $entityManager;
+    /**
+     * @var SearchTermPopularityScoreRepository
+     */
+    private $popularityScoreRepository;
 
-    public function __construct(SearchPopularityScore $searchPopularityScore, EntityManagerInterface $entityManager)
+    public function __construct(SearchPopularityScore $searchPopularityScore, EntityManagerInterface $entityManager, SearchTermPopularityScoreRepository $popularityScoreRepository)
     {
         $this->searchPopularityScore = $searchPopularityScore;
         $this->entityManager = $entityManager;
+        $this->popularityScoreRepository = $popularityScoreRepository;
     }
 
     /**
@@ -28,6 +35,13 @@ class ScoreController extends AbstractController
      */
     public function index(Request $request): Response
     {
+        if ($score = $this->popularityScoreRepository->findOneBy(['term' => $request->query->get('term')])) {
+            return $this->json([
+                'term' => $score->getTerm(),
+                'score' => $score->getScore(),
+            ]);
+        }
+
         $score = $this->searchPopularityScore->search($request->query->get('term'));
 
         $this->entityManager->persist($score);

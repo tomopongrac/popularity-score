@@ -19,32 +19,11 @@ class SearchTermPopularityScoreRepository extends ServiceEntityRepository
         parent::__construct($registry, SearchTermPopularityScore::class);
     }
 
-    // /**
-    //  * @return SearchTermPopularityScore[] Returns an array of SearchTermPopularityScore objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getCountAllRows()
     {
         return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
+            ->select('count(s.id)')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getSingleScalarResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?SearchTermPopularityScore
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
