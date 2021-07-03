@@ -52,7 +52,13 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "run-tests": {
+            "phpunit": "php bin/phpunit --exclude=outside"
+        },
+        "run-tests-outside": {
+            "phpunit": "php bin/phpunit --group outside"
+        }
     },
     "conflict": {
         "symfony/symfony": "*"
