@@ -1,0 +1,31 @@
+version: "3"
+services:
+    app:
+        build: .
+        ports:
+            - "8888:80"
+        volumes:
+            - .:/var/www/html
+        depends_on:
+            - mysql
+        networks:
+            - my-network
+    mysql:
+        container_name: symfony-mysql
+        image: mariadb:latest
+        networks:
+            - my-network
+        ports:
+            - 13306:3306
+        volumes:
+            - mysql:/var/lib/mysql
+        environment:
+            MYSQL_DATABASE: symfony
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_USER: symfony
+            MYSQL_PASSWORD: secret
+networks:
+    my-network:
+volumes:
+    mysql:
+            driver: "local"
