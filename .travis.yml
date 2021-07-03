@@ -1,0 +1,11 @@
+language: php
+php:
+  - '7.4'
+before_install:
+  - composer self-update
+install:
+  - composer install
+script:
+  - touch ./var/test.db3
+  - ./bin/console doctrine:schema:create --env=test
+  - ./bin/phpunit
