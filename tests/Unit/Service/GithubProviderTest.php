@@ -3,9 +3,11 @@
 namespace App\Tests\Unit\Service;
 
 use App\Entity\PositiveSearchTerm;
+use App\Entity\SearchResult;
 use App\Service\GithubProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
+use Symfony\Component\HttpClient\NativeHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 
 class GithubProviderTest extends TestCase
@@ -21,5 +23,20 @@ class GithubProviderTest extends TestCase
 
         $this->assertEquals('php', $searchResult->getSearchTerm());
         $this->assertEquals(6, $searchResult->getCountNumber());
+    }
+
+    /**
+     * @test
+     * @group outside
+     */
+    public function it_checks_that_source_has_property_total_count()
+    {
+        $httpClient = new NativeHttpClient();
+        $githubProvider = new GithubProvider($httpClient);
+
+        $searchTerm = new PositiveSearchTerm('php');
+        $searchResult = $githubProvider->handle($searchTerm);
+
+        $this->assertInstanceOf(SearchResult::class, $searchResult);
     }
 }
