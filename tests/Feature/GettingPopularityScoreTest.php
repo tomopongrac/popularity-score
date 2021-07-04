@@ -119,6 +119,41 @@ class GettingPopularityScoreTest extends WebTestCase
         $this->assertEquals(1, $searchTermPopularityScoreCount);
     }
 
+    /** @test */
+    public function term_is_required_property()
+    {
+        $client = static::createClient();
+
+        // Request a specific page
+        $crawler = $client->request('GET', '/score');
+
+        // Validate a successful response and some content
+        $this->assertResponseStatusCodeSame(422);
+
+        $response = $client->getResponse();
+        $responseData = json_decode($response->getContent(), true);
+
+        $this->assertEquals('Required Attribute', $responseData['errors']['title']);
+    }
+
+
+    /** @test */
+    public function term_cannot_be_blank()
+    {
+        $client = static::createClient();
+
+        // Request a specific page
+        $crawler = $client->request('GET', '/score?term=');
+
+        // Validate a successful response and some content
+        $this->assertResponseStatusCodeSame(422);
+
+        $response = $client->getResponse();
+        $responseData = json_decode($response->getContent(), true);
+
+        $this->assertEquals('Invalid Attribute', $responseData['errors']['title']);
+    }
+
     /**
      * @return object|null
      */

@@ -66,7 +66,16 @@ class ScoreController extends AbstractController
      */
     public function index(Request $request, SerializerInterface $serializer): Response
     {
-        $version = $request->query->get('version') ?? 1;
+        // Validation
+        if ($request->query->get('term') === null) {
+            return new JsonResponse($this->getErrorMessage('Required Attribute', 'Term is required field.'), 422);
+        }
+        if ($request->query->get('term') === '') {
+            return new JsonResponse($this->getErrorMessage('Invalid Attribute', 'Term cannot be blank.'), 422);
+        }
+
+        $version = $this->checkApiVersion($request);
+
         if ($score = $this->popularityScoreRepository->findOneBy(['term' => $request->query->get('term')])) {
             return new JsonResponse(json_decode($serializer->serialize($score, 'json', SerializationContext::create()->setVersion($version))));
         }
@@ -77,5 +86,31 @@ class ScoreController extends AbstractController
         $this->entityManager->flush();
 
         return new JsonResponse(json_decode($serializer->serialize($score, 'json', SerializationContext::create()->setVersion($version))));
+    }
+
+    /**
+     * @return array[]
+     */
+    private function getErrorMessage($title, $detail): array
+    {
+        return [
+            'errors' => [
+                'status' => '422',
+                'source' => [
+                    'pointer' => '/data/attributes/term'
+                ],
+                'title' => $title,
+                'detail' => $detail,
+            ]
+        ];
+    }
+
+    /**
+     * @param Request $request
+     * @return bool|float|int|string|\Symfony\Component\HttpFoundation\InputBag
+     */
+    private function checkApiVersion(Request $request)
+    {
+        return $request->query->get('version') ?? 1;
     }
 }
