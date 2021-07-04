@@ -21,6 +21,7 @@ class SearchTermPopularityScore
 
     /**
      * @ORM\Column(type="string", length=255, nullable=false)
+     * @Serializer\Until("1")
      * @Serializer\Expose
      */
     private $term;
@@ -28,9 +29,21 @@ class SearchTermPopularityScore
     /**
      * @ORM\Column(type="float", scale=2, nullable=false)
      * @Serializer\Expose()
+     * @Serializer\Until("1")
      */
     private $score;
 
+    /**
+     * @Serializer\VirtualProperty("data")
+     * @Serializer\Since("2")
+     */
+    public function data()
+    {
+        return [
+            'term' => $this->term,
+            'score' => $this->score,
+        ];
+    }
     public function getId(): ?int
     {
         return $this->id;
