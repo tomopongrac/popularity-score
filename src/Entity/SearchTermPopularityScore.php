@@ -4,9 +4,11 @@ namespace App\Entity;
 
 use App\Repository\SearchTermPopularityScoreRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass=SearchTermPopularityScoreRepository::class)
+ * @Serializer\ExclusionPolicy("all")
  */
 class SearchTermPopularityScore
 {
@@ -19,11 +21,13 @@ class SearchTermPopularityScore
 
     /**
      * @ORM\Column(type="string", length=255, nullable=false)
+     * @Serializer\Expose
      */
     private $term;
 
     /**
      * @ORM\Column(type="float", scale=2, nullable=false)
+     * @Serializer\Expose()
      */
     private $score;
 

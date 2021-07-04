@@ -6,7 +6,9 @@ use App\Entity\SearchTerm;
 use App\Repository\SearchTermPopularityScoreRepository;
 use App\Service\SearchPopularityScore;
 use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,13 +35,10 @@ class ScoreController extends AbstractController
     /**
      * @Route("/score", name="score")
      */
-    public function index(Request $request): Response
+    public function index(Request $request, SerializerInterface $serializer): Response
     {
         if ($score = $this->popularityScoreRepository->findOneBy(['term' => $request->query->get('term')])) {
-            return $this->json([
-                'term' => $score->getTerm(),
-                'score' => $score->getScore(),
-            ]);
+            return new JsonResponse(json_decode($serializer->serialize($score, 'json')));
         }
 
         $score = $this->searchPopularityScore->search($request->query->get('term'));
@@ -47,9 +46,6 @@ class ScoreController extends AbstractController
         $this->entityManager->persist($score);
         $this->entityManager->flush();
 
-        return $this->json([
-            'term' => $score->getTerm(),
-            'score' => $score->getScore(),
-        ]);
+        return new JsonResponse(json_decode($serializer->serialize($score, 'json')));
     }
 }
