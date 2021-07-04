@@ -11,7 +11,11 @@ class TermPopularityCalculator
 {
     public function calculateTermPopularity(SearchResult $positiveSearchResult, SearchResult $negativeSearchResult): SearchTermPopularityScore
     {
-        $calculatedScore = round($positiveSearchResult->getCountNumber() / ($positiveSearchResult->getCountNumber() + $negativeSearchResult->getCountNumber()) * 10, 2);
+        if ($positiveSearchResult->getCountNumber() === 0 && $negativeSearchResult->getCountNumber() === 0) {
+            $calculatedScore = 0;
+        } else {
+            $calculatedScore = round($positiveSearchResult->getCountNumber() / ($positiveSearchResult->getCountNumber() + $negativeSearchResult->getCountNumber()) * 10, 2);
+        }
 
         $searchTermPopularityScore = new SearchTermPopularityScore();
         $searchTermPopularityScore->setTerm($positiveSearchResult->getSearchTerm());
